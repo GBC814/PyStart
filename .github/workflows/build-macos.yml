@@ -1,0 +1,63 @@
+name: Build macOS PKG Package
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10.11'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r MacOS/requirements.txt
+        pip install nuitka zstandard
+        
+    - name: Verify source code
+      run: |
+        echo "Verifying source code..."
+        python -m py_compile MacOS/src/main.py
+        echo "Source code OK"
+        
+    - name: Setup Python runtime
+      run: |
+        chmod +x MacOS/packaging/macos/setup_macos_runtime.sh
+        ./MacOS/packaging/macos/setup_macos_runtime.sh
+        
+    - name: Build with Nuitka
+      run: |
+        chmod +x MacOS/packaging/macos/build_nuitka_macos.sh
+        ./MacOS/packaging/macos/build_nuitka_macos.sh
+        
+    - name: Upload crash report if exists
+      uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: nuitka-crash-report
+        path: nuitka-crash-report.xml
+        retention-days: 30
+        
+    - name: Build PKG package
+      run: |
+        chmod +x MacOS/packaging/macos/build_pkg.sh
+        ./MacOS/packaging/macos/build_pkg.sh
+        
+    - name: Upload PKG artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: PyStart-macos-pkg
+        path: dist/*.pkg
+        retention-days: 30

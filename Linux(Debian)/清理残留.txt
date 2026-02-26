@@ -1,0 +1,11 @@
+# 卸载旧版本（如果有）
+sudo dpkg -r pystart 2>/dev/null
+
+# 清理用户配置（可选，强制显示语言选择）
+rm -rf ~/.config/PyStart/ ~/.local/share/PyStart/
+
+# 安装新包
+sudo dpkg -i ~/PyStart/dist/PyStart_v1.0.0_amd64.deb
+
+# 运行测试
+PyStart

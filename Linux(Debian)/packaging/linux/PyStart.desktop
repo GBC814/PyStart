@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=PyStart
+Comment=Python IDE
+GenericName=Python IDE
+Exec=PyStart
+Icon=PyStart
+Terminal=false
+Type=Application
+Keywords=Python;IDE;Programming;Development;
+Categories=Development;IDE;
+StartupWMClass=PyStart

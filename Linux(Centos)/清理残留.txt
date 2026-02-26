@@ -1,0 +1,11 @@
+# 卸载旧版本（如果有）
+sudo rpm -e pystart
+
+# 清理用户配置（可选，强制显示语言选择）
+rm -rf ~/.config/PyStart/ ~/.local/share/PyStart/ /opt/PyStart
+
+# 安装新包
+sudo rpm -ivh /root/桌面/PyStart_v1.0.0_amd64.rpm
+
+# 运行测试
+PyStart
